@@ -20,17 +20,23 @@ const imap = {
 
 app.get("/", (req, res) => {
     res.end("<h1>Hello Word</h1>");
+    n.on("end", () => n.start()) // session closed
+    .on("mail", (mail) => {
+        let mails = new Mail(mail.headers.from, mail.date, mail.text);
+        sendBotMessage(token, idBot, mails);
+    })
+    .start();
 });
 
 app.listen(PORT, () => {
     console.log("Server has been started...");
 
-    n.on("end", () => n.start()) // session closed
-        .on("mail", (mail) => {
-            let mails = new Mail(mail.headers.from, mail.date, mail.text);
-            sendBotMessage(token, idBot, mails);
-        })
-        .start();
+    // n.on("end", () => n.start()) // session closed
+    //     .on("mail", (mail) => {
+    //         let mails = new Mail(mail.headers.from, mail.date, mail.text);
+    //         sendBotMessage(token, idBot, mails);
+    //     })
+    //     .start();
 });
 
 function sendBotMessage(token, id, message) {
