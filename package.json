@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index"
   },
   "keywords": [
     "node.js",
@@ -16,6 +16,7 @@
   "author": "Evgene A",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "mail-notifier": "^0.5.0",
     "nanoid": "^3.1.29",
     "request": "^2.88.2"

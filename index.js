@@ -1,3 +1,6 @@
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 80;
 const notifier = require("mail-notifier");
 const { nanoid } = require("nanoid");
 const https = require("https");
@@ -15,12 +18,16 @@ const imap = {
     tlsOptions: { rejectUnauthorized: false },
 };
 
-notifier(imap)
-    .on("mail", (mail) => {
-        let mails = new Mail(mail.headers.from, mail.date, mail.text);
-        sendBotMessage(token, idBot, mails);
-    })
-    .start();
+app.listen(PORT, () => {
+    console.log("Server has been started...");
+
+    notifier(imap)
+        .on("mail", (mail) => {
+            let mails = new Mail(mail.headers.from, mail.date, mail.text);
+            sendBotMessage(token, idBot, mails);
+        })
+        .start();
+});
 
 function sendBotMessage(token, id, message) {
     let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${id}&text=${message.headers}, ${message.date}, ${message.text}`;
