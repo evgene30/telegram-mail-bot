@@ -11,7 +11,7 @@ const idBot = "98887119";
 const imap = {
     user: userMail,
     password: mailPass,
-    host: "imap.googlemail.com",
+    host: "imap.gmail.com",
     port: 993,
     tls: true,
     tlsOptions: { rejectUnauthorized: false },
