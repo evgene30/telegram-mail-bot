@@ -23,14 +23,16 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
     console.log("Server has been started...");
+});
 
+function startGetMail() {
     notifier(imap)
         .on("mail", (mail) => {
             let mails = new Mail(mail.headers.from, mail.date, mail.text);
             sendBotMessage(token, idBot, mails);
         })
         .start();
-});
+}
 
 function sendBotMessage(token, id, message) {
     let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${id}&text=${message.headers}, ${message.date}, ${message.text}`;
