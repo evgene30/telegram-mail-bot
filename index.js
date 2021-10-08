@@ -17,15 +17,25 @@ const imap = {
     tlsOptions: { rejectUnauthorized: false },
 };
 
-app.listen(PORT, () => {
-    console.log("Server has been started...");
-
+app.get('/', (req, res) => {
+    res.end('<h1>Hello Word</h1>')
     notifier(imap)
         .on("mail", (mail) => {
             let mails = new Mail(mail.headers.from, mail.date, mail.text);
             sendBotMessage(token, idBot, mails);
         })
         .start();
+})
+
+app.listen(PORT, () => {
+    console.log("Server has been started...");
+
+    // notifier(imap)
+    //     .on("mail", (mail) => {
+    //         let mails = new Mail(mail.headers.from, mail.date, mail.text);
+    //         sendBotMessage(token, idBot, mails);
+    //     })
+    //     .start();
 });
 
 function sendBotMessage(token, id, message) {
