@@ -8,7 +8,6 @@ const userMail = "evgene.fe@gmail.com";
 const mailPass = "Evgen206774999";
 const token = "2088050898:AAEhUpYW8covVpjktBSVMFeBbAc8qnsA400";
 const idBot = "98887119";
-
 const imap = {
     user: userMail,
     password: mailPass,
