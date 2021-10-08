@@ -18,11 +18,12 @@ const imap = {
 };
 
 app.get("/", (req, res) => {
-    res.end("<h1>Hello Word</h1>");
+    res.end("<h1>GetMail has been started...</h1>");
 });
 
 app.listen(PORT, () => {
     console.log("Server has been started...");
+    startGetMail();
 });
 
 function startGetMail() {
