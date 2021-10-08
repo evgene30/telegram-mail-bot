@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "mail-notifier": "^0.5.0",
-    "nanoid": "^3.1.29"
+    "nanoid": "^3.1.29",
+    "request": "^2.88.2"
   }
 }
