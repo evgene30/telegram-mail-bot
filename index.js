@@ -24,14 +24,7 @@ const imap = {
 app.listen(PORT, () => {
     console.log("Server has been started...");
     startGetMail();
-
-    bot.start((ctx) => ctx.reply("Welcome"));
-    bot.help((ctx) => ctx.reply("Send me a sticker"));
-    bot.on("sticker", (ctx) => ctx.reply("👍"));
-    bot.hears("@mail", (ctx) => ctx.reply("I send your mail..."));
-    bot.launch();
-    process.once("SIGINT", () => bot.stop("SIGINT"));
-    process.once("SIGTERM", () => bot.stop("SIGTERM"));
+    botControl();
 });
 
 function startGetMail() {
@@ -42,6 +35,16 @@ function startGetMail() {
             sendBotMessage(dataUser.tokenBot, dataUser.idBot, mails);
         })
         .start();
+}
+
+function botControl() {
+    bot.start((ctx) => ctx.reply("Welcome"));
+    bot.help((ctx) => ctx.reply("Send me a sticker"));
+    bot.on("sticker", (ctx) => ctx.reply("👍"));
+    bot.hears("@mail", (ctx) => ctx.reply("I send your mail..."));
+    bot.launch();
+    process.once("SIGINT", () => bot.stop("SIGINT"));
+    process.once("SIGTERM", () => bot.stop("SIGTERM"));
 }
 
 function sendBotMessage(token, id, message) {
