@@ -4,22 +4,20 @@ const PORT = process.env.PORT || 80;
 const notifier = require("mail-notifier");
 const { nanoid } = require("nanoid");
 const https = require("https");
-const userMail = "evgene.fe@gmail.com";
-const mailPass = "difzrofpmtkenuaq";
-const token = "2088050898:AAEhUpYW8covVpjktBSVMFeBbAc8qnsA400";
-const idBot = "98887119";
+const dataUser = {
+    mail: "evgene.fe@gmail.com",
+    pass: "difzrofpmtkenuaq",
+    tokenBot: "2088050898:AAEhUpYW8covVpjktBSVMFeBbAc8qnsA400",
+    idBot: "98887119",
+};
 const imap = {
-    user: userMail,
-    password: mailPass,
+    user: dataUser.mail,
+    password: dataUser.pass,
     host: "imap.gmail.com",
     port: 993,
     tls: true,
     tlsOptions: { rejectUnauthorized: false },
 };
-
-app.get("/", (req, res) => {
-    res.end("<h1>GetMail has been started...</h1>");
-});
 
 app.listen(PORT, () => {
     console.log("Server has been started...");
@@ -31,7 +29,7 @@ function startGetMail() {
     n.on("end", () => n.start()) // session closed
         .on("mail", (mail) => {
             let mails = new Mail(mail.headers.from, mail.date, mail.text);
-            sendBotMessage(token, idBot, mails);
+            sendBotMessage(dataUser.tokenBot, dataUser.idBot, mails);
         })
         .start();
 }
