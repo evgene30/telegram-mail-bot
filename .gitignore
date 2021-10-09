@@ -9,6 +9,7 @@ node_modules/
 /vendor
 .idea
 /idea
+.env
 
 # ignore components loaded via Bower
 /bower_components
