@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 80;
+const { Telegraf } = require("telegraf");
 const notifier = require("mail-notifier");
 const { nanoid } = require("nanoid");
 const https = require("https");
@@ -10,6 +11,7 @@ const dataUser = {
     tokenBot: "2088050898:AAEhUpYW8covVpjktBSVMFeBbAc8qnsA400",
     idBot: "98887119",
 };
+const bot = new Telegraf(dataUser.tokenBot);
 const imap = {
     user: dataUser.mail,
     password: dataUser.pass,
@@ -22,6 +24,7 @@ const imap = {
 app.listen(PORT, () => {
     console.log("Server has been started...");
     startGetMail();
+    bot.hears("@mail", (ctx) => ctx.reply("I send your mail..."));
 });
 
 function startGetMail() {
