@@ -27,7 +27,8 @@ app.listen(PORT, () => {
 });
 
 function startGetMail() {
-    notifier(imap)
+    const n = notifier(imap);
+    n.on("end", () => n.start()) // session closed
         .on("mail", (mail) => {
             let mails = new Mail(mail.headers.from, mail.date, mail.text);
             sendBotMessage(token, idBot, mails);
