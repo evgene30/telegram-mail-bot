@@ -16,10 +16,8 @@
   "author": "Evgene A",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
     "mail-notifier": "^0.5.0",
     "nanoid": "^3.1.29",
-    "request": "^2.88.2",
     "telegraf": "^4.4.2"
   }
 }

@@ -1,10 +1,8 @@
-const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 80;
-const { Telegraf } = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 const notifier = require("mail-notifier");
 const { nanoid } = require("nanoid");
 const https = require("https");
+const { text } = require("telegraf/typings/button");
 const dataUser = {
     mail: "evgene.fe@gmail.com",
     pass: "difzrofpmtkenuaq",
@@ -21,11 +19,8 @@ const imap = {
     tlsOptions: { rejectUnauthorized: false },
 };
 
-app.listen(PORT, () => {
-    console.log("Server has been started...");
-    startGetMail();
-    botControl();
-});
+startGetMail(); // получать письма из почты (автоматически)
+botControl(); // управление ботом
 
 function startGetMail() {
     const n = notifier(imap);
@@ -38,10 +33,18 @@ function startGetMail() {
 }
 
 function botControl() {
-    bot.start((ctx) => ctx.reply("Welcome"));
-    bot.help((ctx) => ctx.reply("Send me a sticker"));
-    bot.on("sticker", (ctx) => ctx.reply("👍"));
-    bot.hears("@mail", (ctx) => ctx.reply("I send your mail..."));
+    bot.start((ctx) =>
+        ctx.reply(
+            `Привет ${
+                ctx.message.from.first_name
+                    ? ctx.message.from.first_name
+                    : "аноним"
+            }! 👍`
+        )
+    );
+    bot.help((ctx) => ctx.reply(text.comands));
+    // bot.on("sticker", (ctx) => ctx.reply("👍"));
+    // bot.hears("@mail", (ctx) => ctx.reply("I send your mail..."));
     bot.launch();
     process.once("SIGINT", () => bot.stop("SIGINT"));
     process.once("SIGTERM", () => bot.stop("SIGTERM"));
