@@ -1,8 +1,8 @@
-const commands = `
+const command = `
 /start - Restart bot
-/help - Viv help command
+/help - Look help command
 /sendmail - Send new email
 `;
 
 
-module.exports.commands
+module.exports.command = command;
