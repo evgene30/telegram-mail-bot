@@ -4,5 +4,4 @@ const command = `
 /sendmail - Send new email
 `;
 
-
 module.exports.command = command;

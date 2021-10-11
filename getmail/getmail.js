@@ -1,6 +1,6 @@
 require("dotenv").config();
 const notifier = require("mail-notifier");
-const {nanoid} = require("nanoid");
+const { nanoid } = require("nanoid");
 const https = require("https");
 const imap = {
     user: process.env.mail,
@@ -8,9 +8,8 @@ const imap = {
     host: "imap.gmail.com",
     port: 993,
     tls: true,
-    tlsOptions: {rejectUnauthorized: false},
+    tlsOptions: { rejectUnauthorized: false },
 };
-
 
 module.exports = function startGetMail() {
     const n = notifier(imap);
@@ -20,14 +19,14 @@ module.exports = function startGetMail() {
             sendBotMessage(process.env.tokenBot, process.env.idBot, mails);
         })
         .start();
-}
+};
 
 function sendBotMessage(token, id, message) {
     let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${id}&text=${message.headers}, ${message.date}, ${message.text}`;
     try {
         https.get(url);
     } catch (e) {
-        console.error(e)
+        console.error(e);
     }
 }
 
