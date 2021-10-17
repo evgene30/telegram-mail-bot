@@ -7,10 +7,9 @@ const DATA = require("./data/db.json")
 app.set("port", process.env.PORT || 5000);
 
 
-app.get("/", function (request, response) {
-    const data = JSON.parse(DATA);
+app.get("/", function (request, response) {const data = DATA;
     botControl(); // bot control
-    response.send(data);
+    response.send(DATA);
 }).listen(app.get("port"), function () {
     console.log(
         "App is running, server is listening on port ",
