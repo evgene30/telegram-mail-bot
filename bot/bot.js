@@ -108,7 +108,7 @@ module.exports = function botControl() {
                             db.push(user)
 
 
-                            fs.writeFile(
+                            await fs.writeFile(
                                 "./data/db.json",
                                 JSON.stringify(db), function (error) {
                                     if (error) throw error; // ошибка чтения файла, если есть
