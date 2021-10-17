@@ -1,22 +1,21 @@
 require("dotenv").config();
-const {Telegraf, Markup} = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 const commands = require("./commands");
 const fs = require("fs");
 const newUser = require("./newUser");
 const bot = new Telegraf(process.env.tokenBot);
 const db = require("../data/db.json");
 
-const registerUser = (userId) => { // проверка регистрации
+const registerUser = (userId) => {
+    // проверка регистрации
     for (let i in db) {
         if (db[i].id === userId) {
-            return true
+            return true;
         }
     }
 };
 
-
 module.exports = function botControl() {
-
     bot.start(async (ctx) => {
         if (registerUser(ctx.message.from.id)) {
             try {
@@ -32,7 +31,7 @@ module.exports = function botControl() {
                             Markup.button.callback("Help commands", "help"),
                         ],
                         [Markup.button.callback("Send email", "send")],
-                    ]),
+                    ])
                 );
             } catch (e) {
                 console.error(e);
@@ -41,10 +40,9 @@ module.exports = function botControl() {
         return registerNo(ctx);
     });
 
-
     bot.help((ctx) => {
         if (registerUser(ctx.message.from.id)) {
-            return ctx.reply(commands.command)
+            return ctx.reply(commands.command);
         }
         return registerNo(ctx);
     });
@@ -72,11 +70,10 @@ module.exports = function botControl() {
     actionBot("send");
     actionBot("reg");
 
-
     function actionBot(name) {
         bot.action(name, async (ctx) => {
             try {
-                await ctx.answerCbQuery()
+                await ctx.answerCbQuery();
                 switch (name) {
                     case "restart":
                         await ctx.replyWithHTML(
@@ -100,42 +97,50 @@ module.exports = function botControl() {
                         await ctx.reply(commands.command);
                         break;
                     case "reg":
-
-
                         if (!registerUser(ctx.from.id)) {
-
-                            const user = new newUser(ctx.from.id, ctx.from.first_name, ctx.from.username);
-                            db.push(user)
-
+                            const user = new newUser(
+                                ctx.from.id,
+                                ctx.from.first_name,
+                                ctx.from.username
+                            );
+                            db.push(user);
 
                             await fs.writeFile(
                                 "./data/db.json",
-                                JSON.stringify(db), function (error) {
+                                JSON.stringify(db),
+                                function (error) {
                                     if (error) throw error; // ошибка чтения файла, если есть
                                 }
                             );
-                            return setTimeout(() => ctx.reply(`Your register! 👍 ${commands.command}`), 1000);
+                            return setTimeout(
+                                () =>
+                                    ctx.reply(
+                                        `Your register! 👍 ${commands.command}`
+                                    ),
+                                1000
+                            );
                         }
                         await ctx.reply(commands.command);
 
                         break;
                     case "send":
-                        const massiveSendMail = {firm: "", email: "", text: ""};
+                        const massiveSendMail = {
+                            firm: "",
+                            email: "",
+                            text: "",
+                        };
 
                         await ctx.reply("Enter firm name:");
 
-
                         bot.on("text", async (ctx) => {
-
                             if (ctx.message.text.length > 3) {
                                 massiveSendMail.firm = ctx.message.text;
-
                             } else {
                                 return ctx.reply(
                                     "Error: name less than > 3 characters..."
                                 );
                             }
-                        })
+                        });
 
                         break;
                 }
@@ -152,7 +157,7 @@ module.exports = function botControl() {
                 Markup.inlineKeyboard([
                     [Markup.button.callback("Register", "reg")],
                 ])
-            )
+            );
         } catch (e) {
             console.error(e);
         }
