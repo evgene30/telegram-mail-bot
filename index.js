@@ -2,7 +2,7 @@ const botControl = require("./bot/bot");
 const startGetMail = require("./getmail/getmail");
 const express = require("express");
 const app = express();
-const DATA = require("./data/db.json")
+const DATA = require("./data/db.json");
 
 app.set("port", process.env.PORT || 5000);
 

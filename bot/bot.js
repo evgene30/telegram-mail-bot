@@ -1,5 +1,5 @@
 require("dotenv").config();
-const {Telegraf, Markup} = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 const commands = require("./commands");
 const fs = require("fs");
 const newUser = require("./newUser");
@@ -49,8 +49,6 @@ module.exports = function botControl() {
 
     bot.on("sticker", (ctx) => ctx.reply("Your humor makes me happy 👍"));
 
-    bot.on("text", (ctx) => ctx.reply(commands.command));
-
     bot.command("sendmail", async (ctx) => {
         if (registerUser(ctx.message.from.id)) {
             try {
@@ -66,6 +64,8 @@ module.exports = function botControl() {
         }
         return registerNo(ctx);
     });
+    
+    bot.on("text", (ctx) => ctx.reply(commands.command));
 
     actionBot("restart");
     actionBot("help");
