@@ -8,7 +8,7 @@ app.set("port", process.env.PORT || 5000);
 
 
 app.get("/", function (request, response) {
-    const data = JSON.stringify(DATA);
+    const data = JSON.parse(DATA);
     botControl(); // bot control
     response.send(data);
 }).listen(app.get("port"), function () {
