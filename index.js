@@ -11,8 +11,7 @@ const server = http.createServer((req, res) => {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
 
 
-    botControl(); // bot control
-    // startGetMail(); // get mail (env)
+
 
 
     const data = JSON.stringify(DATA);
@@ -22,5 +21,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, 'localhost', (error) => {
     error ? console.log(error) : console.log(`Listening port ${PORT}`)
+    botControl(); // bot control
+    // startGetMail(); // get mail (env)
 })
 
