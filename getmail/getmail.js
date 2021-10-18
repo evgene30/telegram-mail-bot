@@ -1,6 +1,6 @@
 require("dotenv").config();
 const notifier = require("mail-notifier");
-const { nanoid } = require("nanoid");
+const {nanoid} = require("nanoid");
 const https = require("https");
 const imap = {
     user: process.env.mail,
@@ -8,7 +8,7 @@ const imap = {
     host: "imap.gmail.com",
     port: 993,
     tls: true,
-    tlsOptions: { rejectUnauthorized: false },
+    tlsOptions: {rejectUnauthorized: false},
 };
 
 module.exports = function startGetMail() {
