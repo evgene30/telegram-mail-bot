@@ -1,22 +1,19 @@
 require("dotenv").config();
 const {Telegraf, Markup} = require("telegraf");
 const commands = require("./commands");
-const fs = require("fs");
 const newUser = require("./newUser");
 const bot = new Telegraf(process.env.tokenBot);
-const db = require("../data/db.json");
+const connectDB = require("../data/connectDB");
+const usersJSON = require("../data/users.json");
+
 
 const registerUser = (userId) => {
-    // проверка регистрации
-    for (let i in db) {
-        if (db[i].id === userId) {
-            return true;
-        }
-    }
+    return usersJSON.filter(item => item.id === userId).join('');
 };
 
 module.exports = function botControl() {
-    console.log("Starting bot...")
+    console.log("Starting bot...");
+
     bot.start(async (ctx) => {
         if (registerUser(ctx.message.from.id)) {
             try {
@@ -30,8 +27,9 @@ module.exports = function botControl() {
                         [
                             Markup.button.callback("Restart bot", "restart"),
                             Markup.button.callback("Help commands", "help"),
+                            Markup.button.callback("Send email", "send"),
+                            Markup.button.callback("Delete User", "del")
                         ],
-                        [Markup.button.callback("Send email", "send")],
                     ])
                 );
             } catch (e) {
@@ -66,12 +64,11 @@ module.exports = function botControl() {
         return registerNo(ctx);
     });
 
-
-
     actionBot("restart");
     actionBot("help");
     actionBot("send");
     actionBot("reg");
+    actionBot("del");
 
     function actionBot(name) {
         bot.action(name, async (ctx) => {
@@ -99,6 +96,14 @@ module.exports = function botControl() {
                     case "help":
                         await ctx.reply(commands.command);
                         break;
+                    case "del":
+                        if (registerUser(ctx.from.id)) {
+                            connectDB.deleteUser({id: ctx.from.id})
+                            setTimeout(() => connectDB.getUsers(), 1000)
+                            return ctx.reply(`Your deleted!`);
+                        }
+                        return registerNo(ctx);
+                        break;
                     case "reg":
                         if (!registerUser(ctx.from.id)) {
                             const user = new newUser(
@@ -106,25 +111,13 @@ module.exports = function botControl() {
                                 ctx.from.first_name,
                                 ctx.from.username
                             );
-                            db.push(user);
-
-                            await fs.writeFile(
-                                "./data/db.json",
-                                JSON.stringify(db),
-                                function (error) {
-                                    if (error) throw error; // ошибка чтения файла, если есть
-                                }
-                            );
-                            return setTimeout(
-                                () =>
-                                    ctx.reply(
-                                        `Your register! 👍 ${commands.command}`
-                                    ),
-                                1000
+                            connectDB.setUsers(user);
+                            setTimeout(() => connectDB.getUsers(), 1000)
+                            return ctx.reply(
+                                `Your register! 👍 ${commands.command}`
                             );
                         }
-                        await ctx.reply(commands.command);
-
+                        return ctx.reply(commands.command);
                         break;
                     case "send":
                         const massiveSendMail = {
