@@ -7,6 +7,7 @@ const registerNo = require("./noRegister");
 const registerUser = require("./validUser");
 const newUser = require("./newUser");
 const startGetMail = require("../getmail/getmail");
+const smtpMailServer = require("../setmail/setMail");
 const {rwUsersJSON} = require('../bot/rwUsersJSON');
 
 
@@ -75,36 +76,34 @@ module.exports = function botControl() {
                 await ctx.answerCbQuery();
                 switch (name) {
                     case "restart":
-                        await ctx.replyWithHTML(
-                            `Bot was <b>restarted</b>. What are we doing?`,
-                            Markup.inlineKeyboard([
-                                [
-                                    Markup.button.callback(
-                                        "Restart bot",
-                                        "restart"
-                                    ),
-                                    Markup.button.callback(
-                                        "Help commands",
-                                        "help"
-                                    ),
-                                ],
-                                [Markup.button.callback("Send email", "send")],
-                            ])
-                        );
-                        break;
+                        if (registerUser(ctx.from.id)) {
+                            await ctx.replyWithHTML(
+                                `Bot was <b>restarted</b>. What are we doing?`,
+                                Markup.inlineKeyboard([
+                                    [
+                                        Markup.button.callback(
+                                            "Restart bot",
+                                            "restart"
+                                        ),
+                                        Markup.button.callback(
+                                            "Help commands",
+                                            "help"
+                                        ),
+                                    ],
+                                    [Markup.button.callback("Send email", "send")],
+                                ])
+                            );
+                        }
+                        return registerNo(ctx);
                     case "help":
                         await ctx.reply(commands.command);
                         break;
                     case "del":
                         if (registerUser(ctx.from.id)) {
-
-                            connectDB.deleteUser({id: ctx.from.id})
                             rwUsersJSON([])
-
                             return ctx.reply(`Your deleted!`);
                         }
                         return registerNo(ctx);
-                    // break;
                     case "reg":
                         if (!registerUser(ctx.from.id)) {
                             const user = new newUser(
@@ -112,7 +111,6 @@ module.exports = function botControl() {
                                 ctx.from.first_name,
                                 ctx.from.username
                             );
-
                             connectDB.setUsers(user);
                             rwUsersJSON([user])
                             // startGetMail();
@@ -121,26 +119,29 @@ module.exports = function botControl() {
                             );
                         }
                         return ctx.reply(commands.command);
-                    // break;
+
                     case "send":
-                        const massiveSendMail = {
-                            firm: "",
-                            email: "",
-                            text: "",
-                        };
-                        await ctx.reply("Enter firm name:");
+                        if (registerUser(ctx.from.id)) {
+                            ctx.reply("Enter mail format: заголовок письма | почта на которую отправляем | текст письма. Разделитель '|' - обязательно!");
 
-                        bot.on("text", async (ctx) => {
-                            if (ctx.message.text.length > 3) {
-                                massiveSendMail.firm = ctx.message.text;
-
-                            } else {
-                                return ctx.reply(
-                                    "Error: name less than > 3 characters..."
-                                );
-                            }
-                        });
-                        break;
+                            bot.on("text", async (ctx) => {
+                                if (ctx.message.text.length > 3) {
+                                    const massiveMessage = ctx.message.text.split('|');
+                                    const mail = {
+                                        username: ctx.from.username,
+                                        handle: massiveMessage[0],
+                                        email: massiveMessage[1],
+                                        text: massiveMessage[2],
+                                    };
+                                    smtpMailServer(mail);
+                                    return setTimeout(() => ctx.reply(`Success! 👍 ${commands.command}`), 1000);
+                                } else {
+                                    return ctx.reply(
+                                        "Error. Format: заголовок письма | почта на которую отправляем | текст письма. Разделитель '|' - обязательно!"
+                                    );
+                                }
+                            });
+                        }
                 }
             } catch (e) {
                 console.error(e);
@@ -148,10 +149,11 @@ module.exports = function botControl() {
         });
     }
 
-    bot.launch().then(() => {
-        process.once("SIGINT", () => bot.stop("SIGINT"));
-        process.once("SIGTERM", () => bot.stop("SIGTERM"));
-    })
+    bot.launch()
+    //     .then(() => {
+    //     process.once("SIGINT", () => bot.stop("SIGINT"));
+    //     process.once("SIGTERM", () => bot.stop("SIGTERM"));
+    // })
 
 };
 
