@@ -1,5 +1,5 @@
-const botControl = require("./bot/bot");
+const botStart = require("./bot/index_bot");
 const startGetMail = require("./getmail/getmail");
 
-botControl(); // bot control
+botStart(); // bot control
 

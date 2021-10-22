@@ -1,8 +1,7 @@
-const {MongoClient} = require("mongodb");
-const fs = require('fs');
 require("dotenv").config();
-const uri =
-    `mongodb+srv://admin:${process.env.DATA_ADMINPASS}@cluster1.ov6cn.mongodb.net/telegramDB?retryWrites=true&w=majority`;
+const {MongoClient} = require("mongodb");
+const {rwUsersJSON} = require('../bot/rwUsersJSON');
+const uri = `mongodb+srv://admin:${process.env.DATA_ADMINPASS}@cluster1.ov6cn.mongodb.net/telegramDB?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -16,8 +15,7 @@ const connectDB = {
                     .db("telegramDB")
                     .collection("users");
                 const users = await collection.find({}).toArray();
-                const data = JSON.stringify(users);
-                fs.writeFileSync("./data/users.json", data);
+                // await rwUsersJSON(users);
                 await client.close();
             } catch (err) {
                 console.log(err);
@@ -50,6 +48,7 @@ const connectDB = {
             }
         }),
 };
+
 
 module.exports = connectDB;
 

@@ -19,6 +19,7 @@ module.exports = function startGetMail() {
             sendBotMessage(process.env.tokenBot, process.env.idBot, mails);
         })
         .start();
+    console.log("Start getMail...")
 };
 
 function sendBotMessage(token, id, message) {
