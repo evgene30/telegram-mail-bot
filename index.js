@@ -7,11 +7,12 @@ const startGetMail = require("./getmail/getmail");
 
 app.get('/', (req, res) => {
     res.send('App run...')
+    botStart(); // bot control
 })
 
 app.listen(port, () => {
     console.log(`Server app listening at http://localhost:${port}`);
-    botStart(); // bot control
+
 })
 
 
